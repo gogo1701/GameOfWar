@@ -11,7 +11,7 @@ Console.WriteLine(@"
 || + Each of the two players are dealt one half of a shuffled deck of cards.  ||
 || + Each turn, each player draws one card from their deck.                   ||
 || + The player that drew the card with higher value gets both cards.         ||
-|| + Both cards return to the winner&#39;s deck.                              ||
+|| + Both cards return to the winners deck.                                   ||
 || + If there is a draw, both players place the next three cards face down    ||
 || and then another card face-up. The owner of the higher face-up             ||
 || card gets all the cards on the table.                                      ||
@@ -27,7 +27,7 @@ Console.WriteLine(@"
 
 List<Card> deck = GenerateDeck();
 
-ShuffleDeck();
+ShuffleDeck(deck);
 
 Queue<Card> firstPlayerDeck = new Queue<Card>();
 Queue<Card> secondPlayerDeck = new Queue<Card>();
@@ -42,6 +42,7 @@ int totalMoves = 0;
 while(!GameHasWinner())
 {
     Console.ReadLine();
+    Console.Clear();
 
     DrawPlayersCards();
 
@@ -58,6 +59,8 @@ while(!GameHasWinner())
     Console.WriteLine($"First player currently has {firstPlayerDeck.Count} cards.");
     Console.WriteLine($"Second player currently has {secondPlayerDeck.Count} cards.");
     Console.WriteLine("==================================================================");
+
+    totalMoves++;
 }
 
 void ShuffleDeck(List<Card> deck)
@@ -76,23 +79,32 @@ void ShuffleDeck(List<Card> deck)
 
 void DealCardsToPlayers()
 {
-    while(deck.Count > 0)
+    bool giveToFirstPlayer = true;
+    while (deck.Any())
     {
-        Card[] firstTwoDrawnCards = deck.Take(2).ToArray();
+        if (giveToFirstPlayer)
+        {
+            firstPlayerDeck.Enqueue(deck[0]);
+        }
+        else
+        {
+            secondPlayerDeck.Enqueue(deck[0]);
+        }
 
-        firstPlayerDeck.Enqueue(firstTwoDrawnCards[0]);
-        secondPlayerDeck.Enqueue(firstTwoDrawnCards[0]);
+        deck.RemoveAt(0); 
+        giveToFirstPlayer = !giveToFirstPlayer; 
     }
 }
 
+
 bool GameHasWinner()
 {
-    if (!firstPlayerDeck.Any())
+    if (firstPlayerDeck.Count < 4)
     {
         Console.WriteLine($"After a total of {totalMoves} moves, the second player has won!");
         return true;
     }
-    if (!secondPlayerDeck.Any())
+    if (secondPlayerDeck.Count < 4)
     {
         Console.WriteLine($"After a total of {totalMoves} moves, the first player has won!");
         return true;
@@ -141,10 +153,69 @@ void DetermineRoundWinner(Queue<Card> pool)
     else
     {
         Console.WriteLine("The second player has won the cards!");
-        
-        foreach(var card in pool)
+
+        foreach (var card in pool)
         {
             secondPlayerDeck.Enqueue(card);
         }
     }
 }
+
+List<Card> GenerateDeck()
+{
+    List<Card> deck = new List<Card>();
+    CardFace[] faces = (CardFace[])Enum.GetValues(typeof(CardFace));
+    CardSuit[] suits = (CardSuit[])Enum.GetValues(typeof(CardSuit));
+
+    for (int suite = 0; suite < suits.Length; suite++)
+    {
+        for (int face = 0; face < faces.Length; face++)
+        {
+            CardFace currentFace = faces[face];
+            CardSuit currentSuit = suits[suite];
+            deck.Add(new Card
+            {
+                Face = currentFace,
+                Suite = currentSuit
+
+            });
+        }
+    }
+    return deck;
+}
+
+void ProcessWar(Queue<Card> pool)
+{
+    while ((int)firstPlayerCard.Face == (int)secondPlayerCard.Face)
+    {
+        Console.WriteLine("WAR!");
+
+        if (firstPlayerDeck.Count < 4)
+        {
+            Console.WriteLine("First player does not have enough cards to continue. Second player wins the game!");
+            secondPlayerDeck = new Queue<Card>(secondPlayerDeck.Concat(pool)); 
+            firstPlayerDeck.Clear(); 
+            return; // Exit war logic
+        }
+
+        if (secondPlayerDeck.Count < 4)
+        {
+            Console.WriteLine("Second player does not have enough cards to continue. First player wins the game!");
+            firstPlayerDeck = new Queue<Card>(firstPlayerDeck.Concat(pool)); 
+            secondPlayerDeck.Clear(); 
+            return; 
+        }
+
+        AddWarCardsToPool(pool);
+
+        firstPlayerCard = firstPlayerDeck.Dequeue();
+        secondPlayerCard = secondPlayerDeck.Dequeue();
+
+        Console.WriteLine($"First player has drawn: {firstPlayerCard}");
+        Console.WriteLine($"Second player has drawn: {secondPlayerCard}");
+
+        pool.Enqueue(firstPlayerCard);
+        pool.Enqueue(secondPlayerCard);
+    }
+}
+
