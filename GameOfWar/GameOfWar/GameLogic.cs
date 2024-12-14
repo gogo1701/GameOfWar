@@ -60,10 +60,15 @@ namespace GameOfWar
 
         public void DrawPlayersCards(ref Card firstPlayerCard, ref Card secondPlayerCard, ref Queue<Card> firstPlayerDeck, ref Queue<Card> secondPlayerDeck)
         {
+
             firstPlayerCard = firstPlayerDeck.Dequeue();
             Console.WriteLine($"First player has drawn: {firstPlayerCard}");
+            DrawCardClass.PrintCard(firstPlayerCard);
+
             secondPlayerCard = secondPlayerDeck.Dequeue();
             Console.WriteLine($"Second player has drawn: {secondPlayerCard}");
+            DrawCardClass.PrintCard(secondPlayerCard);
+
 
         }
 
