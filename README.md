@@ -38,39 +38,40 @@ Each player `receives 26 cards` in their deck.
 
 
 ## 🛠 Technologies Used
-- **Programming Language:** *C#* <br> 
-- **Framework:** *.NET 6 (Long Term Support)* <br>
-- **Tools:** *Visual Studio*
+- **Programming Language:** *C#*, *MySQL*, *SQL* <br> 
+- **Framework:** *.NET 6 Console-based App* <br>
+- **Tools:** *Visual Studio*, *MAMP*
+- **NuGet Packages:** *MySql.Data*
 
 
 ## 💻 Implementation Details
-Classes and Enumerations
-Card: Represents a single card with a face (e.g., Ace, King) and suit (e.g., Hearts, Spades).
-Enumerations:
-CardFace: Defines the face values of cards (2 through Ace).
-CardSuit: Defines the four suits (Spades, Clubs, Hearts, Diamonds) using Unicode characters.
-Core Methods
-GenerateDeck: Creates a standard 52-card deck.
-ShuffleDeck: Randomizes the order of cards.
-DealCardsToPlayers: Distributes cards evenly to both players.
-GameHasWinner: Checks if one player has won the game.
-DrawPlayersCards: Simulates each player drawing a card from their deck.
-ProcessWar: Handles the "war" scenario when cards are tied.
-DetermineRoundWinner: Determines the winner of each round and allocates cards accordingly.
+### Classes In GameLogic file:
+- Card: Represents a single card with a face (e.g., Ace, King) and suit (e.g., Hearts, Spades).
+### Enumerations In GameLogic file:
+- CardFace: Defines the face values of cards (2 through Ace).
+- CardSuit: Defines the four suits (Spades, Clubs, Hearts, Diamonds) using Unicode characters.
+### Core Methods in GameLogic file:
+- GenerateDeck: Creates a standard 52-card deck.
+- ShuffleDeck: Randomizes the order of cards.
+- DealCardsToPlayers: Distributes cards evenly to both players.
+- GameHasWinner: Checks if one player has won the game.
+- DrawPlayersCards: Simulates each player drawing a card from their deck.
+- ProcessWar: Handles the "war" scenario when cards are tied.
+- DetermineRoundWinner: Determines the winner of each round and allocates cards accordingly.
+### Other Classes
+- DrawCardClass: Helps with the drawing of cards in console.
+- UserDAO: Helps with connection to MySql database and CRUD operations related to it.
 
+## 💪 Extra Functionality
+This project also includes a profile system, where players have profiles and can see how much games they have won/lost. This is a scheme of how the connection works. <br>
+![gameofwarDAo drawio](https://github.com/user-attachments/assets/34fb4cea-ae9a-49e0-a21f-8c90d44ca747)
 
 ## 🚀 How to Play
 - Clone the repository and open the project in Visual Studio.
+- Follow instructions on how to run the DB (found in DB folder).
 - Run the game 
 - Follow the console prompts to play the game:
 - Press Enter to draw a card for each turn.
 - The game announces the winner of each round.
 - Continue playing until one player wins.
-
-
-
-
-## 🔗 Links
-**Replit Link:**
-**Source Code:** 
 
