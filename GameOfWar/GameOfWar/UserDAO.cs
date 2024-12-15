@@ -11,7 +11,7 @@ namespace GameOfWar
 {
     public class UserDAO
     {
-        string connectionString = "datasource=localhost;port=3306;username=root;password=root;database=register;";
+        string connectionString = "datasource=localhost;port=3306;username=root;password=root;database=gameofwar;";
 
         public User getUserFromUsername(string name)
         {
