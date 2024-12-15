@@ -1,0 +1,1 @@
+If you want to run the DB locally, install MAMP, run the service and go the myphpadmin page. In there go to the tab "Import" and insert the gameofwar.sql file. After that, everything should be up and running!

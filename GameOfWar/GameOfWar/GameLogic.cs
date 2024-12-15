@@ -42,12 +42,13 @@ namespace GameOfWar
         }
 
 
-        public bool GameHasWinner(ref Queue<Card> firstPlayerDeck, ref Queue<Card> secondPlayerDeck, ref int totalMoves, User user)
+        public bool GameHasWinner(ref Queue<Card> firstPlayerDeck, ref Queue<Card> secondPlayerDeck, ref int totalMoves, ref User user)
         {
             if (firstPlayerDeck.Count < 4)
             {
                 UserDAO userDAO = new UserDAO();
-                userDAO.setLoses(user.losesGame + 1, user.Username);
+                userDAO.setLoses(user.losesGame + 1, user.Id);
+                user.losesGame += 1;
 
                 Console.WriteLine($"After a total of {totalMoves} moves, the second player has won!");
                 
@@ -56,7 +57,9 @@ namespace GameOfWar
             if (secondPlayerDeck.Count < 4)
             {
                 UserDAO userDAO = new UserDAO();
-                userDAO.setWins(user.winsGame + 1, user.Username);
+                userDAO.setWins(user.winsGame + 1, user.Id);
+                user.winsGame += 1;
+
                 Console.WriteLine($"After a total of {totalMoves} moves, the first player has won!");
                 return true;
             }

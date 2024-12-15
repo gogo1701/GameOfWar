@@ -86,26 +86,40 @@ namespace GameOfWar
         }
         public int signUp(User user)
         {
-            MySqlConnection connection = new MySqlConnection(connectionString);
-            connection.Open();
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
 
-            MySqlCommand command = new MySqlCommand("INSERT INTO `users`(`username`, `password`, `winsGame`, `losesGame`) VALUES ('@username','@password','@winsGame','@losesGame')", connection);
-            command.Parameters.AddWithValue("@username", user.Username);
-            command.Parameters.AddWithValue("@password", user.Password);
-            command.Parameters.AddWithValue("@winsGame", user.winsGame);
-            command.Parameters.AddWithValue("@losesGame",user.losesGame);
-            int newRows = command.ExecuteNonQuery();
-            connection.Close();
+                MySqlCommand checkUserCommand = new MySqlCommand("SELECT COUNT(*) FROM `users` WHERE `username` = @username", connection);
+                checkUserCommand.Parameters.AddWithValue("@username", user.Username);
+                int userExists = Convert.ToInt32(checkUserCommand.ExecuteScalar());
 
-            return newRows;
+                if (userExists > 0)
+                {
+                    return 0; 
+                }
+
+                MySqlCommand insertCommand = new MySqlCommand(
+                    "INSERT INTO `users`(`username`, `password`, `winsGame`, `losesGame`) VALUES (@username, @password, @winsGame, @losesGame)",
+                    connection
+                );
+                insertCommand.Parameters.AddWithValue("@username", user.Username);
+                insertCommand.Parameters.AddWithValue("@password", user.Password);
+                insertCommand.Parameters.AddWithValue("@winsGame", user.winsGame);
+                insertCommand.Parameters.AddWithValue("@losesGame", user.losesGame);
+
+                int newRows = insertCommand.ExecuteNonQuery();
+                return newRows; 
+            }
         }
-        public int setWins(int newWins, string username)
+
+        public int setWins(int newWins, int id)
         {
             MySqlConnection connection = new MySqlConnection(connectionString);
             connection.Open();
 
-            MySqlCommand command = new MySqlCommand("UPDATE `users` SET `winsGame`='@winsGame' WHERE '@username' = username;", connection);
-            command.Parameters.AddWithValue("@username", username);
+            MySqlCommand command = new MySqlCommand("UPDATE `users` SET `winsGame` = @winsGame WHERE `id` = @id;", connection);
+            command.Parameters.AddWithValue("@id", id);
             command.Parameters.AddWithValue("@winsGame", newWins);
             int newRows = command.ExecuteNonQuery();
             connection.Close();
@@ -113,13 +127,13 @@ namespace GameOfWar
             return newRows;
         }
 
-        public int setLoses(int newLoses, string username)
+        public int setLoses(int newLoses, int id)
         {
             MySqlConnection connection = new MySqlConnection(connectionString);
             connection.Open();
 
-            MySqlCommand command = new MySqlCommand("UPDATE `users` SET `losesGame`='@losesGame' WHERE '@username' = username;", connection);
-            command.Parameters.AddWithValue("@username", username);
+            MySqlCommand command = new MySqlCommand("UPDATE `users` SET `losesGame` = @losesGame WHERE `id` = @id;", connection);
+            command.Parameters.AddWithValue("@id", id);
             command.Parameters.AddWithValue("@losesGame", newLoses);
             int newRows = command.ExecuteNonQuery();
             connection.Close();

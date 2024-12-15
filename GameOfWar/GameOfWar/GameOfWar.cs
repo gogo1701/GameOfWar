@@ -29,24 +29,46 @@ int totalMoves = 0;
 while (true)
 {
 
-    Console.WriteLine("Welcome to the Game Of War Ultra Deluxe!");
-    Console.WriteLine("Please enter one of these options:");
-    Console.WriteLine("1. Login");
-    Console.WriteLine("2. Register");
-    Console.WriteLine("3. Play Game");
+    string border = new string('*', 50);
+
+    Console.WriteLine(border);
+    Console.WriteLine("*                                                *");
+    Console.WriteLine("*            Welcome to the Game Of War          *");
+    Console.WriteLine("*                 Ultra Deluxe!                  *");
+    Console.WriteLine("*                                                *");
+    Console.WriteLine(border);
+    Console.WriteLine("*                 Main Menu                      *");
+    Console.WriteLine(border);
+    Console.WriteLine();
+
+    Console.WriteLine("Account Details:");
+    Console.WriteLine("  [1] Login");
+    Console.WriteLine("  [2] Register");
+    Console.WriteLine("  [3] Logout");
+    Console.WriteLine();
+    Console.WriteLine("Play the Game:");
+    Console.WriteLine("  [4] Play Game");
+    Console.WriteLine();
+    Console.WriteLine("More Options:");
+    Console.WriteLine("  [5] See Statistics");
+    Console.WriteLine("  [6] Exit");
+    Console.WriteLine();
+
+    Console.WriteLine(border);
 
     int input = int.Parse(Console.ReadLine());
 
-    while(input > 3)
+    if (input > 6 || input < 1)
     {
         Console.Clear();
-        Console.WriteLine("Input is NOT correct. Please enter 1,2 or 3.");
-        Console.WriteLine("Input: ");
-        input = int.Parse(Console.ReadLine());
+        Console.WriteLine("Input is NOT correct. Please enter 1,2,3,4,5 or 6.");
+        Console.WriteLine("Press any key to continue.");
+
     }
-    
-    if(input == 1)
+
+    if (input == 1)
     {
+        Console.Clear();
         Console.WriteLine("Please enter username and password.");
         Console.Write("Username:");
         string username = Console.ReadLine();
@@ -56,10 +78,14 @@ while (true)
         Console.WriteLine();
 
         User newUser = userDAO.login(username, password);
-        if(newUser != null)
+        if (newUser != null)
         {
             userLoggined = newUser;
-            
+            Console.WriteLine("Login information correct! Welcome back! Press any key to continue.");
+            Console.ReadKey();
+            Console.Clear();
+            continue;
+
         }
         else
         {
@@ -68,13 +94,61 @@ while (true)
             Console.Clear();
             continue;
         }
-        
-    }
-    else if(input == 2)
-    {
+
 
     }
-    else if(input == 3 && userLoggined != null)
+    else if (input == 2)
+    {
+        Console.Clear();
+        string username = "nothing";
+        string password = "nothing";
+
+        Console.Write("What username would you like to have? :");
+        username = Console.ReadLine();
+
+        Console.Write("What password would you like to have? :");
+        password = Console.ReadLine();
+
+        User newUser = new User();
+
+        newUser.Username = username;
+        newUser.Password = password;
+        newUser.winsGame = 0;
+        newUser.losesGame = 0;
+
+        int result = userDAO.signUp(newUser);
+
+        if (result == 0)
+        {
+            Console.WriteLine("--------------------------------------------- ERROR -------------------------------------------------");
+            Console.WriteLine("It seems there is already a user with this username. Please register again with a different username.");
+            Console.WriteLine("Press any key to continue.");
+        }
+        else
+        {
+            Console.WriteLine("Account created sucessfully. Please press any key to continue.");
+        }
+
+        Console.ReadKey();
+        Console.Clear();
+    }
+    else if (input == 3)
+    {
+        if (userLoggined == null)
+        {
+            Console.WriteLine("There is no account logged in. Press any key to continue.");
+            Console.ReadKey();
+            Console.Clear();
+        }
+        else
+        {
+            userLoggined = null;
+            Console.WriteLine("Account logged out. Press any key to continue.");
+            Console.ReadKey();
+            Console.Clear();
+        }
+    }
+    else if (input == 4 && userLoggined != null)
     {
         Console.WriteLine(@"
 ================================================================================
@@ -98,7 +172,7 @@ while (true)
 || Have fun!                                                                  ||
 ================================================================================");
 
-        while (!gameLogic.GameHasWinner(ref firstPlayerDeck, ref secondPlayerDeck, ref totalMoves, userLoggined))
+        while (!gameLogic.GameHasWinner(ref firstPlayerDeck, ref secondPlayerDeck, ref totalMoves, ref userLoggined))
         {
             Console.ReadLine();
             Console.Clear();
@@ -121,12 +195,41 @@ while (true)
 
             totalMoves++;
         }
-    }else
+    }
+    else if (input == 5 && userLoggined != null) 
     {
+        Console.Clear(); 
 
+        string border1 = new string('*', 40); 
+
+        Console.WriteLine(border1);
+        Console.WriteLine("*" + new string(' ', 38) + "*");
+        Console.WriteLine("* Statistics for user: " + userLoggined.Username.PadRight(18) + "*");
+        Console.WriteLine("*" + new string(' ', 38) + "*");
+        Console.WriteLine("* Wins: " + userLoggined.winsGame.ToString().PadRight(30) + "*");
+        Console.WriteLine("* Loses: " + userLoggined.losesGame.ToString().PadRight(29) + "*");
+        Console.WriteLine("*" + new string(' ', 38) + "*");
+        Console.WriteLine(border1);
+
+        Console.WriteLine("Press any key to continue.");
+        Console.ReadKey();
+        Console.Clear();
+
+
+    }else if(input == 6)
+    {
+        Console.Clear();
+        Console.WriteLine("Thank you for playing! Have a great day!");
+        break;
+    }
+    else if (userLoggined == null)
+    {
+        Console.WriteLine("Either your input is invalid or you are trying to enter the game without having logged on. Please log in or try again. Press any key to continue.");
+        Console.ReadKey();
+        Console.Clear();
     }
 
-    
+
 }
 
 
